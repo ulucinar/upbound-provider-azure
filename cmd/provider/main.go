@@ -112,8 +112,8 @@ func main() {
 			Features:                &feature.Flags{},
 		},
 		Provider:       config.GetProvider(),
-		WorkspaceStore: terraform.NewWorkspaceStore(log, terraform.WithProviderScheduler(scheduler), terraform.WithDisableInit(len(*nativeProviderPath) != 0), terraform.WithProcessReportInterval(*pollInterval)),
-		SetupFn:        clients.TerraformSetupBuilder(*terraformVersion, *providerSource, *providerVersion),
+		WorkspaceStore: terraform.NewWorkspaceStore(log, terraform.WithDisableInit(len(*nativeProviderPath) != 0), terraform.WithProcessReportInterval(*pollInterval)),
+		SetupFn:        clients.TerraformSetupBuilder(*terraformVersion, *providerSource, *providerVersion, scheduler),
 	}
 
 	if *enableExternalSecretStores {
