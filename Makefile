@@ -75,6 +75,11 @@ export SUBPACKAGES := $(SUBPACKAGES)
 
 -include build/makelib/golang.mk
 
+print-subpackages:
+	@echo $(SUBPACKAGES)
+
+
+
 # ====================================================================================
 # Setup Kubernetes tools
 
