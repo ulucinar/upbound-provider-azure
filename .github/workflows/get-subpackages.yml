@@ -1,0 +1,48 @@
+name: Get Provider Subpackages
+
+on:
+  workflow_call:
+    inputs:
+      subpackages_str:
+        description: "Space-delimited list of subpackages to be processed. Can be an '*' if the family provider supports globbing via a 'print-subpackages' make target."
+        required: true
+        type: string
+      provider:
+        description: "Github repository of the family provider, e.g. upbound/provider-upjet-aws."
+        required: true
+        type: string
+      ref:
+        description: "Family provider's branch, tag or SHA to checkout, e.g. v1.23.1."
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+
+    outputs:
+      subpackages:
+        description: "Computed subpackages for the family provider"
+        value: ${{ jobs.calculate_subpackages.outputs.subpackages }}
+
+jobs:
+  calculate_subpackages:
+    name: Calculate Subpackages
+    runs-on: ubuntu-latest
+    # Map the job outputs to step outputs
+    outputs:
+      subpackages: ${{ steps.calc_subpackages.outputs.subpackages }}
+    steps:
+      - name: Checkout ${{ inputs.provider }}
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.provider }}
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.token }}
+
+      - id: calc_subpackages
+        run: |
+          if make -q print-subpackages; [[ $? == 1 ]]; then
+            echo "subpackages=\"$(make SUBPACKAGES="${{ inputs.subpackages_str }}" print-subpackages)\"" >> $GITHUB_OUTPUT
+          else
+            echo "subpackages=\"${{ inputs.subpackages_str }}\"" >> $GITHUB_OUTPUT
+          fi
