@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2024 The Crossplane Authors <https://crossplane.io>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Print Subpackages
+
+on:
+  workflow_dispatch:
+    inputs:
+      subpackages:
+        description: 'Subpackages to be built individually (e.g. config ec2)'
+        default: '*'
+        required: false
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Print Subpackages
+        run: |
+          make SUBPACKAGES='${{ inputs.subpackages }}' print-subpackages
