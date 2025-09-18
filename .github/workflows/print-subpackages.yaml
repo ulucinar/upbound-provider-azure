@@ -24,7 +24,6 @@ jobs:
     with:
       provider: ${{ inputs.provider }}
       ref: main
-      subpackages_str: ${{ inputs.subpackages_str }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
