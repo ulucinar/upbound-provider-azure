@@ -43,6 +43,14 @@ jobs:
         run: |
           if make -q print-subpackages; [[ $? == 1 ]]; then
             echo "subpackages=\"$(make SUBPACKAGES="${{ inputs.subpackages_str }}" print-subpackages)\"" >> $GITHUB_OUTPUT
+          elif [[ "${{ inputs.subpackages_str }}" == "*" ]]; then
+            # wildcard request in the context of a provider not supporting it...
+            echo "Provider ${{ inputs.provider }} does not support wildcard subpackage specification."
+            exit 1
           else
             echo "subpackages=\"${{ inputs.subpackages_str }}\"" >> $GITHUB_OUTPUT
           fi
+
+      - id: debug
+        run: |
+          echo "Computed subpackages: ${{ steps.calc_subpackages.outputs.subpackages }}"
