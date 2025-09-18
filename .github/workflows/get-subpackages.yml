@@ -5,7 +5,7 @@ on:
     inputs:
       subpackages_str:
         description: "Space-delimited list of subpackages to be processed. Can be an '*' if the family provider supports globbing via a 'print-subpackages' make target."
-        required: true
+        required: false
         type: string
       provider:
         description: "Github repository of the family provider, e.g. upbound/provider-upjet-aws."
@@ -41,6 +41,10 @@ jobs:
 
       - id: calc_subpackages
         run: |
+          if [[ -z "${{ inputs.subpackages_str }}" ]]; then
+            echo "subpackages_str was not provided; skipping calculation."
+            exit 0
+          fi
           if make -q print-subpackages; [[ $? == 1 ]]; then
             echo "subpackages=\"$(make SUBPACKAGES="${{ inputs.subpackages_str }}" print-subpackages)\"" >> $GITHUB_OUTPUT
           elif [[ "${{ inputs.subpackages_str }}" == "*" ]]; then

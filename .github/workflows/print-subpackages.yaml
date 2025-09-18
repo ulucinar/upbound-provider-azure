@@ -10,7 +10,7 @@ on:
       subpackages_str:
         description: 'Subpackages to be built individually (e.g. config ec2)'
         default: '*'
-        required: true
+        required: false
         type: string
       provider:
         description: 'Provider repo'
